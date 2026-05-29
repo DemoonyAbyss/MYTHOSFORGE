@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mythos Forge — Cafetería & Ludoteca</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #F5EFE6;
+    --parchment-dark: #E8DDD0;
+    --ink: #2C1A10;
+    --wine: #6B1A2A;
+    --wine-light: #8B2A3E;
+    --gold: #C9952A;
+    --gold-light: #E8B84B;
+    --forest: #2A4A35;
+    --cream: #FAF6F0;
+    --smoke: #B8A898;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--parchment);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    /* Textura ligera en toda la página (pequeño SVG tile) */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: auto;
+    background-position: center;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    background: rgba(44, 26, 16, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--gold);
+    padding: 0 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .nav-logo {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--gold);
+    font-size: 1.1rem;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+  }
+
+  .nav-logo span {
+    color: var(--wine-light);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--parchment);
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.2s, color 0.2s;
+  }
+
+  .nav-links a:hover { opacity: 1; color: var(--gold); }
+
+  .nav-cta {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--wine);
+    color: var(--parchment) !important;
+    opacity: 1 !important;
+    padding: 0.5rem 1.2rem;
+    border: 1px solid var(--wine-light);
+    transition: background 0.2s !important;
+  }
+
+  .nav-cta:hover { background: var(--wine-light) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: rgba(44,26,16,0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+    overflow: visible;
+  }
+
+  /* Imagen de fondo nativa dentro del hero (no escala, se muestra completa) */
+  .hero .hero-bg-img {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 0;
+    pointer-events: none;
+    width: auto;
+    height: auto;
+    max-width: none;
+  }
+
+  /* Asegurar que el contenido del hero esté por encima del fondo */
+  .hero > * { position: relative; z-index: 1; }
+
+  .hero-ornament {
+    font-size: 2rem;
+    color: var(--gold);
+    opacity: 0.6;
+    letter-spacing: 2rem;
+    margin-bottom: 1.5rem;
+    animation: flicker 4s ease-in-out infinite;
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 0.9; }
+    75% { opacity: 0.5; }
+  }
+
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+
+  .hero h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2.8rem, 8vw, 6rem);
+    color: var(--parchment);
+    line-height: 1.1;
+    text-shadow: 0 0 60px rgba(201,149,42,0.3);
+    margin-bottom: 0.3rem;
+  }
+
+  .hero h1 .forge {
+    color: var(--gold);
+    display: block;
+  }
+
+  .hero-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-style: italic;
+    color: var(--smoke);
+    margin: 1.5rem 0 2.5rem;
+    max-width: 500px;
+  }
+
+  .hero-divider {
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    margin: 0 auto 2.5rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: var(--wine);
+    color: var(--parchment);
+    padding: 1rem 2.5rem;
+    border: 1px solid var(--wine-light);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  }
+
+  .btn-primary:hover { background: var(--wine-light); transform: translateY(-1px); }
+
+  .btn-secondary {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--gold);
+    padding: 1rem 2.5rem;
+    border: 1px solid var(--gold);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  }
+
+  .btn-secondary:hover { background: rgba(201,149,42,0.1); transform: translateY(-1px); }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--smoke);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollLine {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* ── SECTION BASE ── */
+  section {
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .section-eyebrow {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    color: var(--wine);
+  }
+
+  .section-ornament {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .ornament-line {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold));
+  }
+
+  .ornament-line.right {
+    background: linear-gradient(to left, transparent, var(--gold));
+  }
+
+  .ornament-diamond {
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+
+  /* ── ABOUT STRIP ── */
+  .about-strip {
+    background: var(--ink);
+    color: var(--parchment);
+    padding: 5rem 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr 1px 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .about-pillar {
+    text-align: center;
+  }
+
+  .pillar-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .pillar-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.9rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.75rem;
+  }
+
+  .pillar-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--smoke);
+  }
+
+  .pillar-divider {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+  }
+
+  /* ── MENU ── */
+  .menu-section {
+    padding: 6rem 4rem;
+    background: var(--cream);
+  }
+
+  .menu-tabs {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .menu-tab {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.5rem;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--smoke);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .menu-tab.active,
+  .menu-tab:hover {
+    background: var(--wine);
+    color: var(--parchment);
+    border-color: var(--wine);
+  }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .menu-card {
+    background: white;
+    border: 1px solid var(--parchment-dark);
+    padding: 1.5rem;
+    position: relative;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .menu-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--gold);
+  }
+
+  .menu-card::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    right: -6px;
+    bottom: -6px;
+    border: 1px solid var(--parchment-dark);
+    z-index: -1;
+    transition: border-color 0.2s;
+  }
+
+  .menu-card:hover::before { border-color: var(--gold); }
+
+  .menu-category-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--wine);
+    font-family: 'Lato', sans-serif;
+    margin-bottom: 0.5rem;
+  }
+
+  .menu-item-name {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+
+  .menu-item-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-style: italic;
+    color: #6B5B4E;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .menu-item-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--parchment-dark);
+    padding-top: 0.75rem;
+  }
+
+  .menu-price {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    color: var(--gold);
+  }
+
+  .menu-tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--parchment);
+    color: var(--forest);
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--forest);
+  }
+
+  /* ── GAMES ── */
+  .games-section {
+    padding: 6rem 4rem;
+    background: var(--parchment);
+  }
+
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .game-card {
+    aspect-ratio: 3/4;
+    background: var(--ink);
+    border: 1px solid var(--wine);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .game-card:hover { transform: scale(1.02); }
+
+  .game-card-bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    opacity: 0.12;
+  }
+
+  .game-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    background: linear-gradient(to top, rgba(44,26,16,0.95), transparent);
+  }
+
+  .game-info {
+    position: relative;
+    z-index: 1;
+  }
+
+  .game-name {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.85rem;
+    color: var(--parchment);
+    margin-bottom: 0.3rem;
+  }
+
+  .game-meta {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    font-family: 'Lato', sans-serif;
+  }
+
+  .game-difficulty {
+    display: flex;
+    gap: 3px;
+    margin-top: 0.4rem;
+  }
+
+  .diff-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--smoke);
+  }
+
+  .diff-dot.filled { background: var(--gold); }
+
+  /* ── SALAS ── */
+  .rooms-section {
+    padding: 6rem 4rem;
+    background: var(--ink);
+  }
+
+  .rooms-section .section-title { color: var(--gold); }
+  .rooms-section .section-eyebrow { color: var(--wine-light); }
+
+  .rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .room-card {
+    border: 1px solid var(--wine);
+    padding: 2rem 1.5rem;
+    position: relative;
+    transition: border-color 0.2s;
+    background: rgba(201,149,42,0.03);
+  }
+
+  .room-card:hover { border-color: var(--gold); }
+
+  .room-card::before {
+    content: attr(data-room);
+    position: absolute;
+    top: -1px;
+    left: 1.5rem;
+    background: var(--ink);
+    padding: 0 0.5rem;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .room-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .room-name {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.1rem;
+    color: var(--parchment);
+    margin-bottom: 0.75rem;
+  }
+
+  .room-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--smoke);
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+  }
+
+  .room-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .room-detail {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-family: 'Lato', sans-serif;
+    color: var(--smoke);
+    border-bottom: 1px solid rgba(201,149,42,0.15);
+    padding-bottom: 0.4rem;
+  }
+
+  .room-detail span:last-child { color: var(--parchment); }
+
+  .btn-room {
+    display: block;
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 0.7rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .btn-room:hover { background: var(--gold); color: var(--ink); }
+
+  /* ── EVENTS ── */
+  .events-section {
+    padding: 6rem 4rem;
+    background: var(--parchment-dark);
+  }
+
+  /* ── RESERVATION SECTION ── */
+  .reservation-section {
+    padding: 4rem 2rem;
+    background: var(--parchment);
+  }
+
+  .reservation-form {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+
+  .reservation-form label { font-size: 0.85rem; color: var(--ink); }
+  .reservation-form input, .reservation-form select, .reservation-form textarea {
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--parchment-dark);
+    font-family: 'Lato', sans-serif;
+    width: 100%;
+  }
+
+  .reservation-form textarea { grid-column: 1 / -1; min-height: 120px; }
+  .reservation-actions { grid-column: 1 / -1; display:flex; gap:1rem; justify-content:flex-end; }
+
+  .reservation-success { display:none; padding:1rem; background: rgba(106,94,70,0.08); border:1px solid var(--parchment-dark); }
+
+  .events-list {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .event-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    align-items: center;
+    gap: 2rem;
+    background: var(--cream);
+    border: 1px solid var(--parchment-dark);
+    border-left: 3px solid var(--wine);
+    padding: 1.5rem;
+    transition: border-left-color 0.2s;
+  }
+
+  .event-item:hover { border-left-color: var(--gold); }
+
+  .event-date {
+    text-align: center;
+  }
+
+  .event-day {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.8rem;
+    color: var(--wine);
+    line-height: 1;
+  }
+
+  .event-month {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--smoke);
+    font-family: 'Lato', sans-serif;
+  }
+
+  .event-name {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.95rem;
+    color: var(--ink);
+    margin-bottom: 0.3rem;
+  }
+
+  .event-details {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-style: italic;
+    color: #6B5B4E;
+  }
+
+  .event-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--wine);
+    color: var(--wine);
+    font-family: 'Lato', sans-serif;
+    white-space: nowrap;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #1A0D08;
+    padding: 4rem;
+    text-align: center;
+    border-top: 1px solid var(--wine);
+  }
+
+  .footer-logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.8rem;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--smoke);
+    margin-bottom: 2rem;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    list-style: none;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .footer-links a {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--smoke);
+    text-decoration: none;
+    font-family: 'Lato', sans-serif;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--gold); }
+
+  .footer-copy {
+    font-size: 0.75rem;
+    color: #4A3A30;
+    font-family: 'Lato', sans-serif;
+  }
+
+  /* ── FADE ANIMATIONS ── */
+  .fade-up {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .menu-filter-input {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .menu-card {
+    display: none;
+  }
+
+  #filter-all:checked ~ .menu-grid .menu-card {
+    display: block;
+  }
+
+  #filter-caliente:checked ~ .menu-grid .menu-card[data-cat="caliente"] {
+    display: block;
+  }
+
+  #filter-frio:checked ~ .menu-grid .menu-card[data-cat="frio"] {
+    display: block;
+  }
+
+  #filter-alimento:checked ~ .menu-grid .menu-card[data-cat="alimento"] {
+    display: block;
+  }
+
+  #filter-postre:checked ~ .menu-grid .menu-card[data-cat="postre"] {
+    display: block;
+  }
+
+  #filter-all:checked ~ .menu-tabs label[for="filter-all"],
+  #filter-caliente:checked ~ .menu-tabs label[for="filter-caliente"],
+  #filter-frio:checked ~ .menu-tabs label[for="filter-frio"],
+  #filter-alimento:checked ~ .menu-tabs label[for="filter-alimento"],
+  #filter-postre:checked ~ .menu-tabs label[for="filter-postre"] {
+    background: var(--wine);
+    color: var(--parchment);
+    border-color: var(--wine);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 0 1.5rem; }
+    .nav-links { display: none; }
+    .about-strip { grid-template-columns: 1fr; padding: 3rem 2rem; }
+    .pillar-divider { display: none; }
+    .menu-section, .games-section, .rooms-section, .events-section { padding: 4rem 1.5rem; }
+    .event-item { grid-template-columns: 60px 1fr; }
+    .event-badge { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Mythos <span>Forge</span></a>
+  <ul class="nav-links">
+    <li><a href="#menu">Menú</a></li>
+    <li><a href="#juegos">Juegos</a></li>
+    <li><a href="#salas">Salas</a></li>
+    <li><a href="#eventos">Eventos</a></li>
+    <li><a href="#reservar" class="nav-cta">Reservar</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <img src="ASSET/FONDO.png" alt="Fondo" class="hero-bg-img">
+  <p class="hero-sub">Cafetería & Ludoteca Temática</p>
+  <h1>
+    Mythos
+    <span class="forge">Forge</span>
+  </h1>
+  <div class="hero-divider"></div>
+  <p class="hero-tagline">Donde cada mesa es el inicio de una nueva aventura</p>
+  <div class="hero-actions">
+    <a href="#salas" class="btn-primary">Reservar Sala</a>
+    <a href="#menu" class="btn-secondary">Ver Menú</a>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Explorar</span>
+  </div>
+</section>
+
+<!-- ABOUT PILLARS -->
+<section class="about-strip">
+  <div class="about-pillar fade-up">
+    <span class="pillar-icon">☕</span>
+    <p class="pillar-title">La Cafetería</p>
+    <p class="pillar-text">Bebidas y alimentos con nombres y presentaciones inspirados en el universo medieval y la fantasía épica.</p>
+  </div>
+  <div class="pillar-divider"></div>
+  <div class="about-pillar fade-up">
+    <span class="pillar-icon">🎲</span>
+    <p class="pillar-title">La Ludoteca</p>
+    <p class="pillar-text">Más de 50 juegos de mesa cuidadosamente seleccionados para todas las edades y niveles de experiencia.</p>
+  </div>
+  <div class="pillar-divider"></div>
+  <div class="about-pillar fade-up">
+    <span class="pillar-icon">⚔️</span>
+    <p class="pillar-title">Las Salas DnD</p>
+    <p class="pillar-text">Espacios privados temáticos perfectamente equipados para campañas de Dungeons & Dragons y juegos de rol.</p>
+  </div>
+</section>
+
+<!-- MENÚ -->
+<section class="menu-section" id="menu">
+  <input type="radio" id="filter-all" name="menu-filter" checked class="menu-filter-input">
+  <input type="radio" id="filter-caliente" name="menu-filter" class="menu-filter-input">
+  <input type="radio" id="filter-frio" name="menu-filter" class="menu-filter-input">
+  <input type="radio" id="filter-alimento" name="menu-filter" class="menu-filter-input">
+  <input type="radio" id="filter-postre" name="menu-filter" class="menu-filter-input">
+
+  <div class="section-header fade-up">
+    <p class="section-eyebrow">Gastronomía Temática</p>
+    <h2 class="section-title">El Grimorio del Sabor</h2>
+    <div class="section-ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line right"></div>
+    </div>
+  </div>
+
+  <div class="menu-tabs">
+    <label for="filter-all" class="menu-tab">Todo el Menú</label>
+    <label for="filter-caliente" class="menu-tab">Pociones Calientes</label>
+    <label for="filter-frio" class="menu-tab">Elixires Fríos</label>
+    <label for="filter-alimento" class="menu-tab">Festín del Héroe</label>
+    <label for="filter-postre" class="menu-tab">Encantamientos Dulces</label>
+  </div>
+
+  <div class="menu-grid" id="menuGrid">
+    <div class="menu-card" data-cat="caliente">
+      <p class="menu-category-badge">☕ Pociones Calientes</p>
+      <p class="menu-item-name">Elixir del Dragón Rojo</p>
+      <p class="menu-item-desc">Cappuccino de canela con espuma de vainilla y polvo dorado comestible.</p>
+      <div class="menu-item-footer">
+        <span class="menu-price">$65</span>
+        <span class="menu-tag">Firma</span>
+      </div>
+    </div>
+    <div class="menu-card" data-cat="caliente">
+      <p class="menu-category-badge">☕ Pociones Calientes</p>
+      <p class="menu-item-name">Té del Mago Sabio</p>
+      <p class="menu-item-desc">Infusión de hierbas del bosque, lavanda y miel silvestre servida en cáliz de cerámica.</p>
+      <div class="menu-item-footer">
+        <span class="menu-price">$45</span>
+        <span class="menu-tag">Popular</span>
+      </div>
+    </div>
+    <div class="menu-card" data-cat="frio">
+      <p class="menu-category-badge">🧊 Elixires Fríos</p>
+      <p class="menu-item-name">Poción de Invisibilidad</p>
+      <p class="menu-item-desc">Limonada azul lavanda con hielo transparente y burbuja de sal de mar.</p>
+      <div class="menu-item-footer">
+        <span class="menu-price">$55</span>
+        <span class="menu-tag">Sin cafeína</span>
+      </div>
+    </div>
+    <div class="menu-card" data-cat="frio">
+      <p class="menu-category-badge">🧊 Elixires Fríos</p>
+      <p class="menu-item-name">Frappuccino del Oráculo</p>
+      <p class="menu-item-desc">Café frío con toffee, nuez y crema montada con runas de chocolate.</p>
+      <div class="menu-item-footer">
+        <span class="menu-price">$70</span>
+        <span class="menu-tag">Firma</span>
+      </div>
+    </div>
+    <div class="menu-card" data-cat="alimento">
+      <p class="menu-category-badge">🍖 Festín del Héroe</p>
+      <p class="menu-item-name">Sándwich del Caballero</p>
+      <p class="menu-item-desc">Pan artesanal, pollo asado, queso ahumado, espinacas y aderezo de ajo negro.</p>
+      <div class="menu-item-footer">
+        <span class="menu-price">$95</span>
+        <span class="menu-tag">+ acompañamiento</span>
+      </div>
+    </div>
+    <div class="menu-card" data-cat="alimento">
+      <p class="menu-category-badge">🍖 Festín del Héroe</p>
+      <p class="menu-item-name">Tostadas del Bardo</p>
+      <p class="menu-item-desc">Bruschetta de masa madre con aguacate, tomate cherry, queso feta y hierbas frescas.</p>
+      <div class="menu-item-footer">
+        <span class="menu-price">$75</span>
+        <span class="menu-tag">Vegetariano</span>
+      </div>
+    </div>
+    <div class="menu-card" data-cat="postre">
+      <p class="menu-category-badge">✨ Encantamientos Dulces</p>
+      <p class="menu-item-name">Pastel de las Estrellas</p>
+      <p class="menu-item-desc">Bizcocho de terciopelo negro con glaseado azul medianoche y polvo de estrellas.</p>
+      <div class="menu-item-footer">
+        <span class="menu-price">$80</span>
+        <span class="menu-tag">Especial</span>
+      </div>
+    </div>
+    <div class="menu-card" data-cat="postre">
+      <p class="menu-category-badge">✨ Encantamientos Dulces</p>
+      <p class="menu-item-name">Runas de Mantequilla</p>
+      <p class="menu-item-desc">Galletas de mantequilla artesanales con símbolos rúnicos en betún de canela.</p>
+      <div class="menu-item-footer">
+        <span class="menu-price">$40</span>
+        <span class="menu-tag">Para compartir</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JUEGOS -->
+<section class="games-section" id="juegos">
+  <div class="section-header fade-up">
+    <p class="section-eyebrow">Catálogo de Aventuras</p>
+    <h2 class="section-title">La Sala del Conocimiento</h2>
+    <div class="section-ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line right"></div>
+    </div>
+  </div>
+
+  <div class="games-grid">
+    <div class="game-card">
+      <div class="game-card-bg">🐉</div>
+      <div class="game-info">
+        <p class="game-name">Dungeons & Dragons</p>
+        <p class="game-meta">2–8 jugadores · 3–5 hrs</p>
+        <div class="game-difficulty">
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot"></div>
+          <div class="diff-dot"></div>
+        </div>
+      </div>
+    </div>
+    <div class="game-card">
+      <div class="game-card-bg">🌾</div>
+      <div class="game-info">
+        <p class="game-name">Catan</p>
+        <p class="game-meta">3–6 jugadores · 1–2 hrs</p>
+        <div class="game-difficulty">
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot"></div>
+          <div class="diff-dot"></div>
+          <div class="diff-dot"></div>
+        </div>
+      </div>
+    </div>
+    <div class="game-card">
+      <div class="game-card-bg">🕵️</div>
+      <div class="game-info">
+        <p class="game-name">Arkham Horror</p>
+        <p class="game-meta">1–6 jugadores · 2–4 hrs</p>
+        <div class="game-difficulty">
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot"></div>
+        </div>
+      </div>
+    </div>
+    <div class="game-card">
+      <div class="game-card-bg">🗺️</div>
+      <div class="game-info">
+        <p class="game-name">Pandemic</p>
+        <p class="game-meta">2–4 jugadores · 1 hr</p>
+        <div class="game-difficulty">
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot"></div>
+          <div class="diff-dot"></div>
+        </div>
+      </div>
+    </div>
+    <div class="game-card">
+      <div class="game-card-bg">🃏</div>
+      <div class="game-info">
+        <p class="game-name">Gloomhaven</p>
+        <p class="game-meta">1–4 jugadores · 2–3 hrs</p>
+        <div class="game-difficulty">
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot filled"></div>
+        </div>
+      </div>
+    </div>
+    <div class="game-card">
+      <div class="game-card-bg">🏰</div>
+      <div class="game-info">
+        <p class="game-name">Carcassonne</p>
+        <p class="game-meta">2–5 jugadores · 45 min</p>
+        <div class="game-difficulty">
+          <div class="diff-dot filled"></div>
+          <div class="diff-dot"></div>
+          <div class="diff-dot"></div>
+          <div class="diff-dot"></div>
+          <div class="diff-dot"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SALAS -->
+<section class="rooms-section" id="salas">
+  <div class="section-header fade-up">
+    <p class="section-eyebrow">Espacios Privados</p>
+    <h2 class="section-title">Las Cámaras Secretas</h2>
+    <div class="section-ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line right"></div>
+    </div>
+  </div>
+
+  <div class="rooms-grid">
+    <div class="room-card" data-room="Sala I">
+      <div class="room-icon">🐉</div>
+      <p class="room-name">Guarida del Dragón</p>
+      <p class="room-desc">Para campañas épicas de DnD. Candelabros, mapas colgantes y mesa hexagonal tallada.</p>
+      <div class="room-details">
+        <div class="room-detail"><span>Capacidad</span><span>6 – 8 personas</span></div>
+        <div class="room-detail"><span>Duración mín.</span><span>2 horas</span></div>
+        <div class="room-detail"><span>Tarifa</span><span>$200/hora</span></div>
+        <div class="room-detail"><span>Equipo incluido</span><span>Dados, fichas, pantalla DM</span></div>
+      </div>
+      <a href="#reservar" class="btn-room">Reservar esta Sala</a>
+    </div>
+
+    <div class="room-card" data-room="Sala II">
+      <div class="room-icon">📚</div>
+      <p class="room-name">Torre del Mago</p>
+      <p class="room-desc">Ambiente de biblioteca arcana. Ideal para juegos de estrategia y partidas de media duración.</p>
+      <div class="room-details">
+        <div class="room-detail"><span>Capacidad</span><span>3 – 5 personas</span></div>
+        <div class="room-detail"><span>Duración mín.</span><span>1.5 horas</span></div>
+        <div class="room-detail"><span>Tarifa</span><span>$150/hora</span></div>
+        <div class="room-detail"><span>Equipo incluido</span><span>Juegos de estrategia</span></div>
+      </div>
+      <a href="#reservar" class="btn-room">Reservar esta Sala</a>
+    </div>
+
+    <div class="room-card" data-room="Sala III">
+      <div class="room-icon">🎵</div>
+      <p class="room-name">Taberna del Bardo</p>
+      <p class="room-desc">Cálida y acogedora. Para grupos pequeños, juegos casuales y tardes de entretenimiento.</p>
+      <div class="room-details">
+        <div class="room-detail"><span>Capacidad</span><span>2 – 4 personas</span></div>
+        <div class="room-detail"><span>Duración mín.</span><span>1 hora</span></div>
+        <div class="room-detail"><span>Tarifa</span><span>$100/hora</span></div>
+        <div class="room-detail"><span>Equipo incluido</span><span>Juegos casuales, naipes</span></div>
+      </div>
+      <a href="#reservar" class="btn-room">Reservar esta Sala</a>
+    </div>
+
+    <div class="room-card" data-room="Sala IV">
+      <div class="room-icon">👑</div>
+      <p class="room-name">Salón del Consejo</p>
+      <p class="room-desc">Espaciosa sala de mesa redonda. Perfecta para torneos, grupos grandes y eventos especiales.</p>
+      <div class="room-details">
+        <div class="room-detail"><span>Capacidad</span><span>10 – 14 personas</span></div>
+        <div class="room-detail"><span>Duración mín.</span><span>3 horas</span></div>
+        <div class="room-detail"><span>Tarifa</span><span>$400/hora</span></div>
+        <div class="room-detail"><span>Equipo incluido</span><span>Proyector, pantalla, kit torneo</span></div>
+      </div>
+      <a href="#reservar" class="btn-room">Reservar esta Sala</a>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTOS -->
+<section class="events-section" id="eventos">
+  <div class="section-header fade-up">
+    <p class="section-eyebrow">Próximas Fechas</p>
+    <h2 class="section-title">El Tablón de Misiones</h2>
+    <div class="section-ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line right"></div>
+    </div>
+  </div>
+
+  <div class="events-list">
+    <div class="event-item fade-up">
+      <div class="event-date">
+        <div class="event-day">07</div>
+        <div class="event-month">Jun</div>
+      </div>
+      <div>
+        <p class="event-name">Torneo de Catan: La Gran Alianza</p>
+        <p class="event-details">Compite por el trono de Catan · Inscripción $80 · Capacidad 24 jugadores</p>
+      </div>
+      <span class="event-badge">Cupos disponibles</span>
+    </div>
+    <div class="event-item fade-up">
+      <div class="event-date">
+        <div class="event-day">14</div>
+        <div class="event-month">Jun</div>
+      </div>
+      <div>
+        <p class="event-name">Noche de DnD para Principiantes</p>
+        <p class="event-details">Aprende a jugar con un Dungeon Master experimentado · Sin costo · Solo reservación</p>
+      </div>
+      <span class="event-badge">Pocos lugares</span>
+    </div>
+    <div class="event-item fade-up">
+      <div class="event-date">
+        <div class="event-day">21</div>
+        <div class="event-month">Jun</div>
+      </div>
+      <div>
+        <p class="event-name">Fiesta de Disfraces Medieval</p>
+        <p class="event-details">Ven caracterizado · Menú especial de temporada · Juegos en sala abierta toda la noche</p>
+      </div>
+      <span class="event-badge">Evento especial</span>
+    </div>
+    <div class="event-item fade-up">
+      <div class="event-date">
+        <div class="event-day">05</div>
+        <div class="event-month">Jul</div>
+      </div>
+      <div>
+        <p class="event-name">Campaña Épica: La Última Fortaleza</p>
+        <p class="event-details">Campaña de DnD de 8 horas · Incluye cena temática · Equipos de 5 personas</p>
+      </div>
+      <span class="event-badge">Pre-registro</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<!-- RESERVATION -->
+<section id="reservar" class="reservation-section">
+  <div class="section-header">
+    <p class="section-eyebrow">Reservaciones</p>
+    <h2 class="section-title">Reservar Sala</h2>
+  </div>
+
+  <form id="reservationForm" class="reservation-form">
+    <div>
+      <label for="resName">Nombre</label>
+      <input id="resName" name="name" required>
+    </div>
+    <div>
+      <label for="resEmail">Correo</label>
+      <input id="resEmail" name="email" type="email" required>
+    </div>
+    <div>
+      <label for="roomSelect">Sala</label>
+      <select id="roomSelect" name="room">
+        <option value="">Seleccione una sala</option>
+        <option value="Sala I">Sala I - Guarida del Dragón</option>
+        <option value="Sala II">Sala II - Torre del Mago</option>
+        <option value="Sala III">Sala III - Taberna del Bardo</option>
+        <option value="Sala IV">Sala IV - Salón del Consejo</option>
+      </select>
+    </div>
+    <div>
+      <label for="resDate">Fecha</label>
+      <input id="resDate" name="date" type="date" required>
+    </div>
+    <div>
+      <label for="resTime">Hora</label>
+      <input id="resTime" name="time" type="time" required>
+    </div>
+    <div>
+      <label for="resGuests">Personas</label>
+      <input id="resGuests" name="guests" type="number" min="1" value="4">
+    </div>
+    <div>
+      <label for="resDuration">Duración (horas)</label>
+      <select id="resDuration" name="duration">
+        <option>1</option>
+        <option>1.5</option>
+        <option selected>2</option>
+        <option>3</option>
+        <option>4</option>
+      </select>
+    </div>
+    <div style="grid-column:1/-1;">
+      <label for="resNotes">Notas</label>
+      <textarea id="resNotes" name="notes"></textarea>
+    </div>
+    <div class="reservation-actions">
+      <div id="reservationMessage" class="reservation-success">Tu reserva ha sido enviada.</div>
+      <button type="submit" class="btn-primary">Enviar Reserva</button>
+    </div>
+  </form>
+</section>
+<footer>
+  <div class="footer-logo">Mythos Forge</div>
+  <p class="footer-tagline">Donde cada mesa es el inicio de una nueva aventura</p>
+  <ul class="footer-links">
+    <li><a href="#menu">Menú</a></li>
+    <li><a href="#juegos">Juegos</a></li>
+    <li><a href="#salas">Salas</a></li>
+    <li><a href="#eventos">Eventos</a></li>
+    <li><a href="#">Nosotros</a></li>
+    <li><a href="#">Contacto</a></li>
+  </ul>
+  <p class="footer-copy">© 2026 Mythos Forge · Cafetería & Ludoteca Temática · Proyecto Para Desarrollo de Aplicaciones Web · UNACAR · Dominique Ugarte & Jordan Perez</p>
+</footer>
+
+</body>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const form = document.getElementById('reservationForm');
+  const msg = document.getElementById('reservationMessage');
+  const roomSelect = document.getElementById('roomSelect');
+
+  // Intercept clicks on any link to #reservar so we can prefill the room when appropriate
+  document.querySelectorAll('a[href="#reservar"]').forEach(function(anchor){
+    anchor.addEventListener('click', function(e){
+      e.preventDefault();
+      // If the clicked anchor is inside a room-card, get its data-room
+      let roomName = '';
+      const roomCard = this.closest('.room-card');
+      if (roomCard && roomCard.dataset.room) roomName = roomCard.dataset.room;
+      // If the clicked anchor itself has data-room attribute, prefer that
+      if (this.dataset && this.dataset.room) roomName = this.dataset.room;
+      if (roomName && roomSelect) {
+        roomSelect.value = roomName;
+      }
+      document.getElementById('reservar').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+
+  // Handle form submission (simulate send)
+  if (form) {
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      msg.style.display = 'block';
+      form.reset();
+      setTimeout(function(){ msg.style.display = 'none'; }, 4000);
+    });
+  }
+});
+</script>
+</html>
+</html>
